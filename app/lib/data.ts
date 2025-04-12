@@ -13,7 +13,7 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 export async function fetchRevenue() {
   try {
-    // artificial response delay
+    // artificial delay
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const data = await sql<Revenue[]>`SELECT * FROM revenue`;
@@ -33,6 +33,8 @@ export async function fetchLatestInvoices() {
       JOIN customers ON invoices.customer_id = customers.id
       ORDER BY invoices.date DESC
       LIMIT 5`;
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
     const latestInvoices = data.map((invoice) => ({
       ...invoice,
@@ -56,6 +58,8 @@ export async function fetchCardData() {
          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
          FROM invoices`;
+
+    await new Promise((resolve) => setTimeout(resolve, 7000));
 
     const data = await Promise.all([
       invoiceCountPromise,
